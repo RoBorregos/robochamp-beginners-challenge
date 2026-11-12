@@ -32,7 +32,6 @@ namespace {
 TCS34725::TCS34725(int sda, int scl) : _sda(sda), _scl(scl) {}
 
 bool TCS34725::begin() {
-    loadDefaultSamples();
     Wire.begin(_sda, _scl);
     uint8_t id = 0;
     if (!readN(regId, &id, 1) || (id != 0x44 && id != 0x4D)) { // 0x44 = TCS34721/5, 0x4D = TCS34723/7
@@ -64,27 +63,24 @@ bool TCS34725::readFeatures(float f[3]) {
     return true;
 }
 
-// shortcut: made-up starting samples, not measured; call learn() on the real track to replace their effect.
-void TCS34725::loadDefaultSamples() {
-    static const float seed[][3] = {
-        {0.60f, 0.25f, 0.15f}, {0.55f, 0.28f, 0.17f}, {0.65f, 0.22f, 0.13f},  // red
-        {0.42f, 0.42f, 0.16f}, {0.40f, 0.44f, 0.16f}, {0.44f, 0.40f, 0.16f},  // yellow
-        {0.25f, 0.50f, 0.25f}, {0.28f, 0.47f, 0.25f}, {0.22f, 0.53f, 0.25f},  // green
-        {0.20f, 0.30f, 0.50f}, {0.22f, 0.28f, 0.50f}, {0.18f, 0.32f, 0.50f},  // blue
-        {0.33f, 0.34f, 0.33f}, {0.34f, 0.33f, 0.33f}, {0.32f, 0.35f, 0.33f},  // gray
-    };
-    for (size_t i = 0; i < sizeof(seed) / sizeof(seed[0]); i++)
-        knn.add(seed[i][0], seed[i][1], seed[i][2], i / 3); // label = ColorsOnTrack index
-}
-
-// Stores the current reading as an example of `color`. False if the sensor read nothing or memory is full.
-bool TCS34725::learn(Constants::ColorsOnTrack color) {
-    float f[3];
-    return readFeatures(f) && knn.add(f[0], f[1], f[2], (int)color);
-}
-
+// shortcut: the 0.10 / 0.08 margins are guessed, not measured; tune on the real track.
 Constants::ColorsOnTrack TCS34725::readColor() {
+    using C = Constants::ColorsOnTrack;
     float f[3];
-    if (!readFeatures(f)) return Constants::ColorsOnTrack::Gray;
-    return (Constants::ColorsOnTrack)knn.classify(f[0], f[1], f[2]);
+    if (!readFeatures(f)) return C::Gray;
+    const float r = f[0], g = f[1], b = f[2];
+
+    if (fabsf(r - g) < 0.10f && fabsf(r - b) < 0.10f && fabsf(g - b) < 0.10f) {
+        return C::Gray;   // Los tres canales son aproximadamente iguales, por lo que es gris (o negro o blanco)
+    } else if (fabsf(r - g) < 0.08f && r > b && g > b) {
+        return C::Yellow; // Amarillo
+    } else if (r > g && r > b) {
+        return C::Red;    // Rojo
+    } else if (g > r && g > b) {
+        return C::Green;
+    } else if (b > r && b > g) {
+        return C::Blue;
+    } else {
+        return C::Gray;
+    }
 }

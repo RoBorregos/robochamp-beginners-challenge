@@ -126,9 +126,6 @@ void RobotServer::handle(uint8_t client, const char* msg) {
         led.setColor(color);
         snprintf(reply, sizeof(reply), "C,%d", (int)color);
         ws.sendTXT(client, reply);
-    } else if (sscanf(msg, "L,%d", &idx) == 1 && idx >= 0 && idx <= (int)Constants::ColorsOnTrack::Gray) {
-        snprintf(reply, sizeof(reply), "L,%d", sensor.learn((Constants::ColorsOnTrack)idx) ? 1 : 0);
-        ws.sendTXT(client, reply);
     }
 }
 
