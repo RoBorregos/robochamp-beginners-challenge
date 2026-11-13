@@ -15,7 +15,7 @@ Link.on('color', i => {
 });
 
 // ---------- UI -> firmware ----------
-const SERVO_CLOSED = 0, SERVO_OPEN = 90; // closed = Constants::ServoConfig::startDeg (boot position)
+const SERVO_CLOSED = 105, SERVO_OPEN = 45; // = Constants::ServoConfig::closedDeg / openDeg (closed is the boot position)
 let servoOpen = false;
 const toggleServo = () => { servoOpen = !servoOpen; Link.robot.servo(servoOpen ? SERVO_OPEN : SERVO_CLOSED); };
 const actions = { tri: toggleServo }; // △ opens / closes the servo

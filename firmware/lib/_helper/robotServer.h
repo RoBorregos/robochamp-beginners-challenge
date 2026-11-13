@@ -28,7 +28,6 @@ private:
     Calibration cal;
     TCS34725 sensor;
     LEDRGB led;
-    RobotServo servo;
     WebServer http;
     WebSocketsServer ws;
     unsigned long lastCommandMs = 0;

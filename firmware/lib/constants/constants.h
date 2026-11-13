@@ -43,12 +43,13 @@ namespace Constants {
         constexpr int red = 19, green = 18, blue = 5;
     }
 
-    // Servo (ESP32Servo): 50 Hz, pulse range in microseconds.
+    // Servo (core LEDC PWM): 50 Hz, pulse range in microseconds.
     namespace ServoConfig {
-        constexpr int pin = 12;
+        constexpr int pin = 13;
         constexpr int hz = 50;
         constexpr int minUs = 500, maxUs = 2400;
-        constexpr int startDeg = 0;   // position on boot
-        constexpr int centerDeg = 90;
+        constexpr int closedDeg = 105; // measured with servoTest; must match SERVO_CLOSED in software/js/main.js
+        constexpr int openDeg = 45;    // measured with servoTest; must match SERVO_OPEN in software/js/main.js
+        constexpr int startDeg = closedDeg; // position on boot
     }
 }
