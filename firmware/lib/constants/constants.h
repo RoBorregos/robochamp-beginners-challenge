@@ -48,8 +48,8 @@ namespace Constants {
         constexpr int pin = 13;
         constexpr int hz = 50;
         constexpr int minUs = 500, maxUs = 2400;
-        constexpr int closedDeg = 105; // measured with servoTest; must match SERVO_CLOSED in software/js/main.js
-        constexpr int openDeg = 45;    // measured with servoTest; must match SERVO_OPEN in software/js/main.js
+        constexpr int closedDeg = 75; // measured with servoTest; must match SERVO_CLOSED in software/js/main.js
+        constexpr int openDeg = 25;    // measured with servoTest; must match SERVO_OPEN in software/js/main.js
         constexpr int startDeg = closedDeg; // position on boot
     }
 }
