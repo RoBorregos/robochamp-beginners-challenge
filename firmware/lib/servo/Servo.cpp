@@ -1,6 +1,11 @@
 #include "Servo.h"
 #include "constants.h"
 #include <Arduino.h>
+#include <esp_arduino_version.h>
+
+#if ESP_ARDUINO_VERSION_MAJOR < 3
+#error "This project needs ESP32 Arduino core 3.x. Run 'pio pkg install' in firmware/ (or setup.bat)."
+#endif
 
 // Plain core LEDC PWM, no servo library: ledcAttach() always takes a free channel and gives 50 Hz its own timer,
 // so the servo can't end up sharing a channel with the motors' / LED's analogWrite (which happened with ESP32Servo).
