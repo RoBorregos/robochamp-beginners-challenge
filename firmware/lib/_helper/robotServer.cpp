@@ -19,7 +19,7 @@ void RobotServer::begin() {
         motors.begin();
         sensor.begin();
         led.begin();
-        servoBegin();
+        servo.begin();
         cal.load();
         motors.setGains(cal.gain);
     }
@@ -111,7 +111,7 @@ void RobotServer::handle(uint8_t client, const char* msg) {
         lastCommandMs = millis();
         moving = a != 0.0f;
     } else if (sscanf(msg, "V,%d", &idx) == 1) {
-        servoWrite(idx);
+        servo.write(idx);
     } else if (strcmp(msg, "S") == 0) {
         motors.stop();
         moving = false;

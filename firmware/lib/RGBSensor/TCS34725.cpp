@@ -70,6 +70,16 @@ Constants::ColorsOnTrack TCS34725::readColor() {
     if (!readFeatures(f)) return C::Gray;
     const float r = f[0], g = f[1], b = f[2];
 
+    // PARA CALIBRACIÓN
+    if (Serial.available()) {
+        Serial.print("Rojo: ");
+        Serial.print(r);
+        Serial.print("Verde: ");
+        Serial.print(g);
+        Serial.print("Azul: ");
+        Serial.println(b);
+    }
+
     if (fabsf(r - g) < 0.10f && fabsf(r - b) < 0.10f && fabsf(g - b) < 0.10f) {
         return C::Gray;   // Los tres canales son aproximadamente iguales, por lo que es gris (o negro o blanco)
     } else if (fabsf(r - g) < 0.08f && r > b && g > b) {

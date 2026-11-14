@@ -3,26 +3,28 @@
 #include <Arduino.h>
 #include "Servo.h"
 
+RobotServo servo;
+
 constexpr int stepDeg = 90;
 constexpr int maxDeg = 180;          // servoWrite clamps to 0..180
 constexpr unsigned long holdMs = 1000; // time to reach and hold each position
 
 void moveTo(int degrees) {
-    servoWrite(degrees);
+    servo.write(degrees);
     Serial.printf("servo -> %d deg\n", degrees);
     delay(holdMs);
 }
 
 void setup() {
     Serial.begin(115200);
-    servoBegin(); // goes to Constants::ServoConfig::startDeg
+    servo.begin(); // goes to Constants::ServoConfig::startDeg
     delay(holdMs);
 }
 
 void loop() {
-    servoWrite(45);
+    servo.write(45);
     delay(5000);
-    servoWrite(105);
+    servo.write(105);
     delay(5000);
     delay(100000);
 }

@@ -1,21 +1,12 @@
 #include "Servo.h"
-#include "constants.h"
-#include <Arduino.h>
 
-// Plain core LEDC PWM, no servo library: ledcAttach() always takes a free channel and gives 50 Hz its own timer,
-// so the servo can't end up sharing a channel with the motors' / LED's analogWrite (which happened with ESP32Servo).
-namespace {
-    constexpr int bits = 14;                         // duty resolution
-    constexpr int periodUs = 1000000 / Constants::ServoConfig::hz; // 20000 us at 50 Hz
-}
-
-void servoBegin() {
-    ledcAttach(Constants::ServoConfig::pin, Constants::ServoConfig::hz, bits);
-    servoWrite(Constants::ServoConfig::startDeg);
-}
-
-void servoWrite(int degrees) {
+void RobotServo::begin() {
     using namespace Constants::ServoConfig;
-    const int pulseUs = map(constrain(degrees, 0, 180), 0, 180, minUs, maxUs);
-    ledcWrite(pin, (uint32_t)pulseUs * (1 << bits) / periodUs);
+    motor.setPeriodHertz(hz);
+    motor.attach(pin, minUs, maxUs);
+    write(startDeg);
+}
+
+void RobotServo::write(int degrees) {
+    motor.write(constrain(degrees, 0, 180));
 }

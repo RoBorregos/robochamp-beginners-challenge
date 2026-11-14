@@ -25,6 +25,7 @@ public:
 private:
     const Mode mode;
     Motors motors;
+    RobotServo servo;
     Calibration cal;
     TCS34725 sensor;
     LEDRGB led;
